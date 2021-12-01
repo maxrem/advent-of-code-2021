@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -12,7 +13,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	
+
 	// testCount, err := readFileAndCountIncreases(path + "/01/test.txt")
 	// if err != nil {
 	// 	panic("test has an error" + err.Error())
@@ -24,6 +25,24 @@ func main() {
 		panic("input has an error" + err.Error())
 	}
 	fmt.Println(count)
+}
+
+func readBlocks(path string, blockSize int) (int, error) {
+	var block []int
+
+	file, err := os.Open(path)
+	if err != nil {
+		return 0, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+
+	for scanner.Scan() {
+		// TODO implement
+	}
+
+	return 0, errors.New("not implemented")
 }
 
 func readFileAndCountIncreases(path string) (int, error) {
