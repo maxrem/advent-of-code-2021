@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -16,11 +15,23 @@ func main() {
 
 	// testCount, err := readFileAndCountIncreases(path + "/01/test.txt")
 	// if err != nil {
-	// 	panic("test has an error" + err.Error())
+	// 	panic("test has an error " + err.Error())
 	// }
 	// fmt.Println(testCount)
 
-	count, err := readFileAndCountIncreases(path + "/01/input.txt")
+	//count, err := readFileAndCountIncreases(path + "/01/input.txt")
+	//if err != nil {
+	//	panic("input has an error" + err.Error())
+	//}
+	//fmt.Println(count)
+
+	//count, err := readBlocks(path + "/01/test.txt", 3)
+	//if err != nil {
+	//	panic("test has an error" + err.Error())
+	//}
+	//fmt.Println(count)
+
+	count, err := readBlocks(path + "/01/input.txt", 3)
 	if err != nil {
 		panic("input has an error" + err.Error())
 	}
@@ -37,12 +48,37 @@ func readBlocks(path string, blockSize int) (int, error) {
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
-
+	index := 0
+	lastSum := -1
+	count := -1
 	for scanner.Scan() {
-		// TODO implement
+		current, err := strconv.Atoi(scanner.Text())
+		if err != nil {
+			continue
+		}
+
+		block = append(block, current)
+
+		if len(block) >= blockSize {
+			currentBlock := block[index:blockSize+index]
+			currentSum := 0
+			for _, measurement := range currentBlock {
+				currentSum += measurement
+			}
+			//fmt.Println(currentBlock, currentSum)
+
+			if lastSum < currentSum {
+				count++
+			}
+			lastSum = currentSum
+
+			index++
+		}
 	}
 
-	return 0, errors.New("not implemented")
+	//fmt.Println(block)
+
+	return count, nil
 }
 
 func readFileAndCountIncreases(path string) (int, error) {
