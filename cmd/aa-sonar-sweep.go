@@ -1,13 +1,19 @@
-package main
+package cmd
 
 import (
 	"bufio"
 	"fmt"
 	"os"
 	"strconv"
+
+	"github.com/spf13/cobra"
 )
 
-func main() {
+var sonarSweepCmd = &cobra.Command{
+	Use:   "sonar-sweep",
+	Short: "Sonar sweep",
+	Run: func(cmd *cobra.Command, args []string) {
+		
 	path, err := os.Getwd()
 	if err != nil {
 		panic(err)
@@ -31,11 +37,17 @@ func main() {
 	//}
 	//fmt.Println(count)
 
-	count, err := readBlocks(path + "/01/input.txt", 3)
+	count, err := readBlocks(path + "/input-files/aa-sonar-sweep.txt", 3)
 	if err != nil {
 		panic("input has an error" + err.Error())
 	}
+	
 	fmt.Println(count)
+	},
+}
+
+func init() {
+	RootCmd.AddCommand(sonarSweepCmd)
 }
 
 func readBlocks(path string, blockSize int) (int, error) {
