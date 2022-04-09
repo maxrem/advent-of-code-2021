@@ -2,6 +2,10 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+	"strconv"
+	"strings"
+
 	"github.com/maxrem/advent-of-code-2021/lib/io"
 
 	"github.com/spf13/cobra"
@@ -12,13 +16,13 @@ var diveCmd = &cobra.Command{
 	Short: "Dive",
 	Run: func(cmd *cobra.Command, args []string) {
 		ch := make(chan string)
-		fileReader := io.NewFileReader("ab-dive", true)
+		fileReader := io.NewFileReader("ab-dive", false)
+		diveReader := DiveReader{ch: ch}
 
 		go fileReader.Read(ch)
 
-		for line := range ch {
-			fmt.Println(line)
-		}
+		diveReader.Handle()
+		diveReader.Print()
 	},
 }
 
@@ -27,9 +31,39 @@ func init() {
 }
 
 type DiveReader struct{
-	ch chan string 
+	ch chan string
+	distance int
+	depth int
 }
 
-func (r *DiveReader) Init(ch chan string) {
-	
+func (r *DiveReader) Handle() {
+	for row := range r.ch {
+		instruction := strings.Split(row, " ")
+		value, err := strconv.Atoi(instruction[1])
+		if err != nil {
+			log.Fatal(err)
+		}
+		switch(instruction[0]) {
+		case "forward":
+			r.distance += value
+		case "down":
+			r.depth += value
+		case "up":
+			r.depth -= value
+			if r.depth < 0 {
+				r.depth = 0
+			}
+		}
+	}
+}
+
+func (r *DiveReader) Print() {
+	fmt.Println(
+		fmt.Sprintf(
+			"Distance: %d, depth: %d, answer: %d",
+			r.distance,
+			r.depth,
+			r.distance * r.depth,
+			),
+		)
 }

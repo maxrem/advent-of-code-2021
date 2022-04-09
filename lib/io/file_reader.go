@@ -22,7 +22,7 @@ func NewFileReader(name string, isTest bool) *FileReader {
 func (r *FileReader) Read(ch chan string) {
 	suffix := ""
 	if (r.IsTest) {
-		suffix = "test"
+		suffix = "-test"
 	}
 
 	currentPath, err := os.Getwd()
@@ -30,7 +30,7 @@ func (r *FileReader) Read(ch chan string) {
 		log.Fatal(err)
 	}
 
-	path := fmt.Sprintf("%s/input/%s-%s.txt", currentPath, r.Name, suffix)
+	path := fmt.Sprintf("%s/input/%s%s.txt", currentPath, r.Name, suffix)
 
 	file, err := os.Open(path)
 	if err != nil {
