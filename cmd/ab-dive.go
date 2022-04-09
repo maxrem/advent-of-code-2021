@@ -21,7 +21,7 @@ var diveCmd = &cobra.Command{
 
 		go fileReader.Read(ch)
 
-		diveReader.Handle()
+		diveReader.HandleSecond()
 		diveReader.Print()
 	},
 }
@@ -34,9 +34,10 @@ type DiveReader struct{
 	ch chan string
 	distance int
 	depth int
+	aim int
 }
 
-func (r *DiveReader) Handle() {
+func (r *DiveReader) HandleFirst() {
 	for row := range r.ch {
 		instruction := strings.Split(row, " ")
 		value, err := strconv.Atoi(instruction[1])
@@ -53,6 +54,26 @@ func (r *DiveReader) Handle() {
 			if r.depth < 0 {
 				r.depth = 0
 			}
+		}
+	}
+}
+
+func (r *DiveReader) HandleSecond() {
+	for row := range r.ch {
+		instruction := strings.Split(row, " ")
+		value, err := strconv.Atoi(instruction[1])
+		if err != nil {
+			log.Fatal(err)
+		}
+		switch(instruction[0]) {
+		case "forward":
+			r.distance += value
+			addedDepth := r.aim * value
+			r.depth += addedDepth
+		case "down":
+			r.aim += value
+		case "up":
+			r.aim -= value
 		}
 	}
 }
