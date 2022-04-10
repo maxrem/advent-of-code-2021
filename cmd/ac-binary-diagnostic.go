@@ -20,6 +20,10 @@ var binaryDiagnosticCmd = &cobra.Command{
 		inputSize, err := strconv.Atoi(args[1]); if err != nil {
 			log.Fatal(err)
 		}
+		isFirst := false
+		if args[2] == "first" {
+			isFirst = true
+		}
 		
 
 		ch := make(chan string)
@@ -32,14 +36,15 @@ var binaryDiagnosticCmd = &cobra.Command{
 
 		go fileReader.Read(ch)
 
-		diagnosticReader.HandleFirst()
-		diagnosticReader.Print()
-		gamma := diagnosticReader.GetBinary(true)
-		epsilon := diagnosticReader.GetBinary(false)
-		answer := diagnosticReader.GetUint(gamma) * diagnosticReader.GetUint(epsilon)
-		fmt.Printf("Answer is %d\n", answer)
+		if isFirst {
+			diagnosticReader.HandleFirst()
+			diagnosticReader.Print()
+			gamma := diagnosticReader.GetBinary(true)
+			epsilon := diagnosticReader.GetBinary(false)
+			answer := diagnosticReader.GetUint(gamma) * diagnosticReader.GetUint(epsilon)
+			fmt.Printf("Answer is %d\n", answer)
+		}
 
-		// https://go.dev/play/p/lTKJdLxCIUT
 	},
 }
 
