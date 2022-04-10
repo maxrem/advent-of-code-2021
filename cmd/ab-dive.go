@@ -15,8 +15,12 @@ var diveCmd = &cobra.Command{
 	Use:   "dive",
 	Short: "Dive",
 	Run: func(cmd *cobra.Command, args []string) {
+		isTest := false
+		if len(args) > 0 {
+			isTest = true
+		}
 		ch := make(chan string)
-		fileReader := io.NewFileReader("ab-dive", false)
+		fileReader := io.NewFileReader("ab-dive", isTest)
 		diveReader := DiveReader{ch: ch}
 
 		go fileReader.Read(ch)
