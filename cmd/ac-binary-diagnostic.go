@@ -14,15 +14,20 @@ var binaryDiagnosticCmd = &cobra.Command{
 	Short: "Binary diagnostic",
 	Run: func(cmd *cobra.Command, args []string) {
 		isTest := false
-		if len(args) > 0 {
+		if args[0] == "test" {
 			isTest = true
 		}
+		inputSize, err := strconv.Atoi(args[1]); if err != nil {
+			log.Fatal(err)
+		}
+		
+
 		ch := make(chan string)
 		fileReader := io.NewFileReader("ac-binary-diagnostic", isTest)
 
 		diagnosticReader := DiagnosticReader{
 			ch:       ch,
-			counters: make([]Iets, 12, 12),
+			counters: make([]Iets, inputSize, inputSize),
 		}
 
 		go fileReader.Read(ch)
